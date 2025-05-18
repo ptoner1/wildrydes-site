@@ -69,28 +69,18 @@ var WildRydes = window.WildRydes || {};
         };
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
         var username = toUsername(email);
-        var secretHash = calculateSecretHash(username);
-        
-        var params = {
-            ClientId: _config.cognito.userPoolClientId,
-            Username: username,
-            Password: password,
-            UserAttributes: [attributeEmail]
-        };
-        
-        if (secretHash) {
-            params.SecretHash = secretHash;
-        }
+        var SecretHash = calculateSecretHash(username);
         
         userPool.signUp(username, password, [attributeEmail], null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
                 } else {
+                    console.error(err);
                     onFailure(err);
                 }
             },
-            secretHash
+            SecretHash
         );
     }
 
